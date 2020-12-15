@@ -354,6 +354,32 @@ async function getPostsByTagName(tagName) {
   }
 }
 
+async function getUserByUsername(username) {
+  try {
+    const {
+      rows: [user],
+    } = await client.query(
+      `
+      SELECT *
+      FROM users
+      WHERE username=$1;
+    `,
+      [username]
+    );
+
+    if (!user) {
+      throw {
+        name: "UserNotFoundError",
+        message: "UserWithThanUserNameDoesNotExist",
+      };
+    }
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+}
+
 module.exports = {
   client,
   createUser,
@@ -366,4 +392,5 @@ module.exports = {
   getUserById,
   getPostsByTagName,
   getAllTags,
+  getUserByUsername,
 };
